@@ -1,0 +1,235 @@
+{
+    "version": 1,
+    "author": "Mariana Milhas",
+    "editor": "wokwi",
+    "parts": [
+        {
+            "type": "wokwi-esp32-devkit-v1",
+            "id": "esp",
+            "top": 14.3,
+            "left": -72.2,
+            "attrs": {}
+        },
+        {
+            "type": "uart-serial",
+            "id": "terminal1",
+            "top": 200,
+            "left": 200,
+            "attrs": {}
+        },
+        {
+            "type": "wokwi-led",
+            "id": "led1",
+            "top": 82.8,
+            "left": 119,
+            "attrs": {
+                "color": "green"
+            }
+        },
+        {
+            "type": "board-ssd1306",
+            "id": "oled1",
+            "top": 89.54,
+            "left": 240.23,
+            "attrs": {
+                "i2cAddress": "0x3c"
+            }
+        },
+        {
+            "type": "wokwi-dht22",
+            "id": "dht1",
+            "top": 0.3,
+            "left": -264.6,
+            "attrs": {}
+        },
+        {
+            "type": "wokwi-potentiometer",
+            "id": "pot1",
+            "top": 267.5,
+            "left": -115.4,
+            "attrs": {}
+        },
+        {
+            "type": "wokwi-led",
+            "id": "led2",
+            "top": 82.8,
+            "left": 157.4,
+            "attrs": {
+                "color": "blue"
+            }
+        },
+        {
+            "type": "wokwi-pushbutton",
+            "id": "btn1",
+            "top": 35,
+            "left": -182.4,
+            "attrs": {}
+        }
+    ],
+    "connections": [
+        [
+            "esp:TX0",
+            "terminal1:RX",
+            "",
+            []
+        ],
+        [
+            "esp:RX0",
+            "terminal1:TX",
+            "",
+            []
+        ],
+        [
+            "led1:A",
+            "esp:D4",
+            "cyan",
+            [
+                "v9.6",
+                "h-57.6",
+                "v-28.9"
+            ]
+        ],
+        [
+            "led2:A",
+            "esp:D2",
+            "cyan",
+            [
+                "v19.2",
+                "h-153.3"
+            ]
+        ],
+        [
+            "esp:GND.1",
+            "led1:C",
+            "gray",
+            [
+                "h105.3",
+                "v-19.3",
+                "h-0.4"
+            ]
+        ],
+        [
+            "esp:3V3",
+            "oled1:VCC",
+            "white",
+            [
+                "h191.7",
+                "v-86.4",
+                "h67.05"
+            ]
+        ],
+        [
+            "esp:GND.1",
+            "oled1:GND",
+            "gray",
+            [
+                "h182.1",
+                "v-86.5",
+                "h67.2"
+            ]
+        ],
+        [
+            "esp:D22",
+            "oled1:SCL",
+            "cyan",
+            [
+                "h0"
+            ]
+        ],
+        [
+            "esp:D21",
+            "oled1:SDA",
+            "magenta",
+            [
+                "v-10",
+                "h278.03"
+            ]
+        ],
+        [
+            "dht1:VCC",
+            "esp:3V3",
+            "white",
+            [
+                "v105.6",
+                "h278.7"
+            ]
+        ],
+        [
+            "dht1:SDA",
+            "esp:D14",
+            "cyan",
+            [
+                "v19.2",
+                "h172.9"
+            ]
+        ],
+        [
+            "dht1:GND",
+            "esp:GND.2",
+            "gray",
+            [
+                "v28.8",
+                "h153.6"
+            ]
+        ],
+        [
+            "pot1:SIG",
+            "esp:D13",
+            "cyan",
+            [
+                "v18.81",
+                "h-58",
+                "v-201.01"
+            ]
+        ],
+        [
+            "pot1:GND",
+            "esp:GND.2",
+            "gray",
+            [
+                "v9.6",
+                "h-38.4",
+                "v-182.3"
+            ]
+        ],
+        [
+            "pot1:VCC",
+            "esp:3V3",
+            "white",
+            [
+                "v19.2",
+                "h95.2",
+                "v-182.4"
+            ]
+        ],
+        [
+            "esp:GND.1",
+            "led2:C",
+            "gray",
+            [
+                "h18.9",
+                "v-0.1",
+                "h124.4"
+            ]
+        ],
+        [
+            "btn1:1.r",
+            "esp:D33",
+            "cyan",
+            [
+                "h29",
+                "v48"
+            ]
+        ],
+        [
+            "btn1:2.r",
+            "esp:GND.2",
+            "gray",
+            [
+                "h19.4",
+                "v96.3"
+            ]
+        ]
+    ],
+    "dependencies": {}
+}
