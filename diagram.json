@@ -45,7 +45,7 @@
         {
             "type": "wokwi-potentiometer",
             "id": "pot1",
-            "top": 267.5,
+            "top": 229.1,
             "left": -115.4,
             "attrs": {}
         },
@@ -168,7 +168,7 @@
             "esp:GND.2",
             "gray",
             [
-                "v28.8",
+                "v48",
                 "h153.6"
             ]
         ],
