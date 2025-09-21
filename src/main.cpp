@@ -17,12 +17,6 @@ bool estadoRiego = false;
 unsigned long ultimoTiempoRiego = 0;
 bool estadoLedRiego = false;
 
-// ✅ NUEVAS VARIABLES PARA BOTÓN DE UN SOLO CLICK
-bool ultimoEstadoBoton = HIGH;
-bool botonPresionado = false;
-unsigned long ultimoDebounce = 0;
-const unsigned long debounceDelay = 50;
-
 void setup()
 {
   Serial.begin(115200);
@@ -63,15 +57,19 @@ void loop()
   if (temp > tempReferencia)
   {
     if (!estadoVentilacion)
+    {
       Serial.println("Ventilacion ACTIVADA");
-    estadoVentilacion = true;
+      estadoVentilacion = true;
+    }
     digitalWrite(LED_VENT, HIGH);
   }
   else
   {
     if (estadoVentilacion)
+    {
       Serial.println("Ventilacion DESACTIVADA");
-    estadoVentilacion = false;
+      estadoVentilacion = false;
+    }
     digitalWrite(LED_VENT, LOW);
   }
 
@@ -79,8 +77,15 @@ void loop()
   if (hum < humedadUmbral)
   {
     if (!estadoRiego)
+    {
       Serial.println("Riego ACTIVADO");
-    estadoRiego = true;
+      estadoRiego = true;
+      estadoLedRiego = true;
+      digitalWrite(LED_RIEGO, HIGH);
+      ultimoTiempoRiego = millis();
+    }
+
+    // Parpadeo cada 500 ms
     if (millis() - ultimoTiempoRiego > 500)
     {
       estadoLedRiego = !estadoLedRiego;
@@ -91,43 +96,24 @@ void loop()
   else
   {
     if (estadoRiego)
+    {
       Serial.println("Riego DESACTIVADO");
-    estadoRiego = false;
+      estadoRiego = false;
+    }
     digitalWrite(LED_RIEGO, LOW);
   }
 
-  // ✅ LÓGICA CORREGIDA PARA UN SOLO CLICK
+  // Botón cambio pantalla
   int lecturaActual = digitalRead(BUTTON_PIN);
 
-  // Detectar flanco descendente (botón presionado)
-  if (lecturaActual == LOW && ultimoEstadoBoton == HIGH)
+  if (lecturaActual == LOW)
   {
-    // Esperar debounce para confirmar
-    if ((millis() - ultimoDebounce) > debounceDelay)
-    {
-      botonPresionado = true;
-    }
-    ultimoDebounce = millis();
-  }
+    pantallaActual = (pantallaActual == 1) ? 2 : 1;
+    Serial.print("Cambio a Pantalla ");
+    Serial.println(pantallaActual);
 
-  // Detectar flanco ascendente (botón liberado)
-  if (lecturaActual == HIGH && ultimoEstadoBoton == LOW)
-  {
-    if ((millis() - ultimoDebounce) > debounceDelay)
-    {
-      // ✅ SOLO CAMBIAR CUANDO SE LIBERA EL BOTÓN
-      if (botonPresionado)
-      {
-        pantallaActual = (pantallaActual == 1) ? 2 : 1;
-        Serial.print("Cambio a Pantalla ");
-        Serial.println(pantallaActual);
-        botonPresionado = false; // Resetear para próximo click
-      }
-    }
-    ultimoDebounce = millis();
+    delay(200); // evita múltiples cambios por rebote
   }
-
-  ultimoEstadoBoton = lecturaActual;
 
   // Mostrar en OLED
   char buffer[128];
@@ -145,5 +131,5 @@ void loop()
   }
 
   _device.showDisplay(buffer);
-  delay(100);
+  // delay(100);
 }
