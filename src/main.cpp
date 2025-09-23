@@ -3,9 +3,9 @@
 // Pines
 const short LED_VENT = 4;
 const short LED_RIEGO = 2;
-const short POTE = 13;
-const short BUTTON_PIN = 33;
-const short PIN_SENSOR = 14;
+const short POTE = 32;
+const short BUTTON_PIN = 34;
+const short PIN_SENSOR = 33;
 
 Device _device(128, 64, -1, PIN_SENSOR, DHT22);
 
@@ -17,6 +17,11 @@ bool estadoRiego = false;
 unsigned long ultimoTiempoRiego = 0;
 bool estadoLedRiego = false;
 
+// --- Variables para debounce (botón)
+unsigned long ultimoCambioBoton = 0;          // momento del último cambio válido
+int estadoAnteriorBoton = HIGH;               // última lectura conocida
+const unsigned long debounceDelayBoton = 200; // ms de bloqueo tras un click
+
 void setup()
 {
   Serial.begin(115200);
@@ -25,11 +30,14 @@ void setup()
   pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   _device.begin();
-  randomSeed(analogRead(0));
   humedadUmbral = random(40, 61);
 
-  Serial.print("Umbral humedad: ");
+  Serial.println("");
+  Serial.println("SISTEMA INICIADO");
+  Serial.print("Umbral humedad: %");
   Serial.println(humedadUmbral);
+  Serial.println("───────────────");
+  Serial.println("");
 
   char buffer[64];
   sprintf(buffer, "Sistema iniciado\nUmbral: %d%%", humedadUmbral);
@@ -103,17 +111,19 @@ void loop()
     digitalWrite(LED_RIEGO, LOW);
   }
 
-  // Botón cambio pantalla
+  // Lectura del botón
   int lecturaActual = digitalRead(BUTTON_PIN);
 
-  if (lecturaActual == LOW)
+  if (lecturaActual == LOW && estadoAnteriorBoton == HIGH)
   {
-    pantallaActual = (pantallaActual == 1) ? 2 : 1;
-    Serial.print("Cambio a Pantalla ");
-    Serial.println(pantallaActual);
-
-    delay(200); // evita múltiples cambios por rebote
+    if (millis() - ultimoCambioBoton > debounceDelayBoton)
+    {
+      pantallaActual = (pantallaActual == 1) ? 2 : 1;
+      ultimoCambioBoton = millis();
+    }
   }
+
+  estadoAnteriorBoton = lecturaActual;
 
   // Mostrar en OLED
   char buffer[128];
@@ -131,5 +141,4 @@ void loop()
   }
 
   _device.showDisplay(buffer);
-  // delay(100);
 }
